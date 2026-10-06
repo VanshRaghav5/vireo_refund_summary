@@ -1,0 +1,30 @@
+{
+ "total_refund_inr": 6709932.0,
+ "refund_tickets": 2340,
+ "q2_2026_inr": 1279823.0,
+ "q2_2026_resolved_only_inr": 1082037.0,
+ "double_dips_18m": 319,
+ "double_dips_flagged": 166,
+ "double_dips_notes_only": 153,
+ "double_dip_refund_value_18m": 1169812.0,
+ "leak_low_18m": 590910.0,
+ "last4_quarters": [
+  "2025Q3",
+  "2025Q4",
+  "2026Q1",
+  "2026Q2"
+ ],
+ "dd_rate_last4": 0.13973333333333332,
+ "dd_count_last4": 262,
+ "leak_low_per_quarter_now": 121775.0,
+ "leak_high_per_quarter_now": 239643.5,
+ "target_rate": 0.02,
+ "saving_low_per_quarter_at_target": 104345.37213740457,
+ "saving_high_per_quarter_at_target": 205343.38072519083,
+ "goodwill_over_cap_tickets": 181,
+ "goodwill_over_cap_inr": 682228.0,
+ "filed_default_share_value": 0.43324373480983114,
+ "true_goodwill_share_value": 0.10167435377884604,
+ "over_refunded_orders": 98,
+ "over_refunded_inr": 250054.0
+}

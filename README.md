@@ -1,36 +1,42 @@
-# Vireo Audio — Support Tickets (Set C)
+# Vireo Audio - refund review (v2)
 
-## Quick start
+Monthly refunds by reason code and by agent, reconciled to one total, with the data problems that made the
+raw export unusable fixed and documented. No API keys, no internet, no paid calls.
 
-1. Install Python 3.10+.
-2. Open this folder in a terminal.
-3. Run:
-   - Windows: `run_windows.bat`
-   - Other systems: `python -m pip install -r requirements.txt` then `streamlit run app.py`
-4. The app reads the files in `data/`.
+## Run it (clean machine)
 
-No API key or internet connection is required.
+Needs Python 3.10+.
 
-## What the tool does
+    python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Scripts\activate
+    pip install -r requirements.txt
+    python run.py                                            # ~15 s; writes ./outputs
+    python -m pytest -q                                      # 10 invariant tests, all must pass
+    streamlit run app.py                                     # optional dashboard
 
-- Corrects legacy Freshdesk refund amounts by dividing the legacy monetary export by 100.
-- Removes migration re-import duplicates by ticket ID, preferring the current helpdesk row where both exist.
-- Produces monthly refunds by reason and refunds by agent.
-- Flags tickets where both refund and replacement were issued.
-- Trains a local TF-IDF + logistic-regression reviewer to suggest reason codes. It is advisory only.
-- Keeps all financial calculations deterministic.
+`data/` already holds the client pack (tickets, agents, orders, products, customers, policy, README, email thread).
+To point at other files: `python run.py --data /path/to/folder --out /path/to/out` (file names are matched by suffix,
+so the UUID prefixes in the export do not matter).
 
-## Important assumptions
+## What you get in `outputs/`
 
-1. The legacy unit correction is supported by the email thread, policy and ticket notes; it is not an arbitrary currency conversion.
-2. Duplicate reconciliation prefers the current helpdesk record when the same ticket ID exists in both source systems.
-3. Tier 2 agents are not compared with Tier 1 on ticket volume, per policy.
-4. The savings estimate assumes prevented duplicate refunds are fully recoverable. Treat this as a planning estimate, not booked savings.
+| File | Use |
+|---|---|
+| `vireo_refund_board_pack.xlsx` | The board-pack workbook. Sheet 1 is the bridge from the raw export to the reconciled total; sheets 3-5 are Month x Reason (re-coded and as-filed) and Month x Agent with live `=SUM` total rows. |
+| `monthly_by_reason_final.csv`, `monthly_by_reason_as_filed.csv`, `monthly_by_agent.csv`, `monthly_agent_reason_long.csv` | The same tables as CSV. |
+| `agents.csv` | One row per agent: refunds, rupees, refunds per 100 tickets, share filed as the dropdown default. |
+| `refund_plus_unit_exceptions.csv` | Refunds where a unit also shipped (policy s5 forbids both), with replacement cost per policy. |
+| `orders_refunded_more_than_value.csv` | Review list, not a leakage claim (see decision.md). |
+| `quarterly.csv`, `headline.json`, `qa_report.md` | Volume/refund-rate/CSAT by quarter; every number quoted in the memo; reconciliation + model QA. |
 
-## Files
+## How it works (4 steps, all in `vireo/pipeline.py`)
 
-- `app.py` — working Streamlit tool
-- `outputs/vireo_refund_board_pack.xlsx` — board-ready tables
-- `memo_to_arjun.md` — one-page business memo
-- `recording_script.md` — <=3 minute recording plan
-- `submission-form-draft.md` — draft only because the official submission form was not included
+1. **Clean** - drop the 638 re-imported duplicates (keep the helpdesk row); divide the remaining legacy Freshdesk refunds by 100
+   (verified: legacy = exactly 100x helpdesk on all 125 duplicated pairs that carry money).
+2. **Re-code reason** - 43% of refund value was filed as `GW-OTHER`, the first item in the agents' dropdown. For those rows only,
+   the reason is taken from goodwill/giveaway language in the note, else from a text classifier trained **only on tickets where the agent
+   chose a deliberate code**; low confidence -> `UNCLEAR`. Amounts are never touched.
+3. **Exceptions** - refund + replacement (flag, or the agent's own note says a unit also shipped).
+4. **Report** - every cut sums to the same total (enforced by tests).
+
+## Known limits
+See `decision.md` section "What is wrong with this".

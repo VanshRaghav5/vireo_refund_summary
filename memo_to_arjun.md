@@ -1,30 +1,16 @@
-# Memo — Refunds are not a ₹1 crore/quarter problem
+**To:** Arjun Mehta, Finance Controller  **Cc:** Priya Raman, Neha Kulkarni, Sameer Qureshi
+**Subject:** Refunds - what the real number is, why it rose, and the one thing to fix
 
-**To:** Arjun Mehta, Finance Controller, Vireo Audio  
-**Date:** 4 October 2026  
-**Subject:** Refund reconciliation, drivers and immediate leakage control
+**The number.** Refunds raised from Jan 2025 to Jun 2026 total **Rs 67.1 lakh** on 2,340 tickets. Q2 2026 is **Rs 12.8 lakh**; Rs 10.8 lakh of that sits on tickets marked resolved, which is almost certainly what the helpdesk's "about Rs 11 lakh" counts (Sameer to confirm). Your export says Rs 23 crore for the same period because of two errors in the export, not in the business: the 638 tickets re-imported from Freshdesk are in twice (Rs 3.6 crore), and Freshdesk stores money 100 times larger (Rs 18.7 crore). Sheet 1 of the workbook bridges the two to the rupee.
 
-## Bottom line
+**Why it rose.** Tickets rose from about 1,050 a quarter to 2,300-2,700. The share of tickets that end in a refund barely moved (18-22%) and refund per ticket is flat (Rs 520-650). Refunds rose because there are more tickets, not because agents became looser. CSAT did not rise 0.4: it moved from 3.54 to 3.46 over the period (3.48 in Q3, 3.51 in Q4). I could not find the improvement in the data and would not put it in the board pack until we know which survey it came from.
 
-The export is overstating refunds. After correcting the legacy Freshdesk monetary unit and removing migration re-import duplicates, the 18-month file contains **₹67.10 lakh** of refunds across **2,340 refund tickets**. Q2 2026 is **₹12.80 lakh**, which is much closer to the helpdesk estimate of roughly ₹11 lakh/quarter than the raw Finance export.
+**What the reason codes really say.** 43% of the money is filed as "GW-OTHER Goodwill / Other" because it is the first item in the dropdown. Reading the agents' own notes, about **10%** of refund value is genuine goodwill (181 tickets, Rs 6.8 lakh); the rest is double charges, cancellations, returns that passed QC, undelivered orders and hardware faults. The workbook shows both columns (as filed and re-coded) so you can see what moved. The re-coding is a text model: it agrees with agents' deliberate codes 98% of the time and 29 of 30 re-codes I read by hand were right. Treat it as a good estimate, not an audit.
 
-The clearest controllable leakage is a policy breach: **166 tickets (7.1% of refund tickets) show both a refund and a replacement**, worth **₹5.74 lakh**. The policy says a customer must not receive both for the same order.
+**Who.** By rupees the top agents are in Returns Desk and Billing, which is their job. I would not name anyone for goodwill; the dropdown habit is spread evenly. Sheet 6 gives each agent's refunds per 100 tickets. Escalations & Warranty is Tier 2 and should not be compared with Tier 1 on volume.
 
-## What is driving the money
+**The one thing to fix.** Policy says a customer never gets both a refund and a replacement. **319 tickets did** (Rs 11.7 lakh refunded alongside a shipped unit). Only 166 carry the replacement flag; for the other 153 the agent's own note says a unit also went out. In the last four quarters 14% of refunds were of this kind. **Goal: bring that to 2% of refund tickets, worth about Rs 1.0 lakh a quarter** (Rs 1.0-2.0 lakh depending on whether you recover the unit cost or the refund). Five agents account for a third of the cases, mostly in Logistics and the frontlines (Returns Desk, which Neha thought did most of this, accounts for 28 of 319). Action: block "refund" when "replacement" is set, and have Team Leads review the list in `8_Refund_plus_unit`.
 
-**GW-OTHER** is the largest refund reason at **₹29.07 lakh (43.3% of refund value)**. This should not automatically be treated as agent misconduct: the CX team explicitly changed frontline behaviour to reduce arguments, and the stated trade-off was higher refunds for higher CSAT.
+**Also noted.** All 181 goodwill-type refunds exceed the Rs 500 goodwill cap; I cannot see approvals, so please check Team Lead sign-off. Refunds on open/pending tickets are included as "raised" and may not have been paid.
 
-The agent table therefore separates volume from exception behaviour. The highest-dollar agents are largely in Billing/Returns, where refunds are expected. Tier 2 is not ranked against Tier 1 because the operating policy explicitly says Tier 2 is multi-touch and should not be compared on ticket volume.
-
-## Recommended target
-
-Reduce refund+replacement exceptions from **7.1% to 2.0%** within one quarter. Using the average quarterly refund value for Q1–Q2 2026, that is approximately **₹64,650 per quarter / ₹2.59 lakh annualised** of avoidable refund leakage, if the prevented refunds are fully recoverable.
-
-## Actions
-
-1. Add a hard stop before refund approval when `replacement_issued = Y`.
-2. Require Team Lead review for any exception and report the exception rate weekly by agent/team.
-3. Keep goodwill refunds visible as a separate management choice rather than labelling them as agent waste.
-4. Use the monthly reason/agent tables in the board pack; use the AI reviewer only to flag tickets for human review, not to calculate money.
-
-**Confidence:** High for the financial reconciliation and policy-exception count; moderate for the AI reason-code reviewer. The local reviewer achieved **54.0% held-out accuracy**, so it is advisory only.
+**Limits.** Month = ticket creation month. DOA and warranty buy-back are merged because the data cannot separate them. Reason re-coding and the 153 note-based cases are my reading of free text and have a few percent error.
